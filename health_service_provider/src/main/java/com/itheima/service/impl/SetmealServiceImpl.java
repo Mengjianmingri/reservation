@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Service(interfaceClass =SetmealService.class )
 @Transactional
@@ -30,7 +31,17 @@ public class SetmealServiceImpl implements SetmealService {
     public void add(Setmeal setmeal, Integer[] checkgroupIds) {
         setmealDao.add(setmeal);
     }
-    
+
+    @Override
+    public List<Setmeal> getSetmeal() {
+        return setmealDao.getSetmeal();
+    }
+
+    @Override
+    public Setmeal findById(Integer id) {
+        return setmealDao.findById(id);
+    }
+
     public void setSetmealAndCheckGroup(Setmeal setmeal, Integer[] checkgroupIds){
         Integer setmealId = setmeal.getId();
         if(checkgroupIds!=null&&checkgroupIds.length!=0){

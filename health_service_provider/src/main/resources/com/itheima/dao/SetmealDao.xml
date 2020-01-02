@@ -3,6 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itheima.dao.SetmealDao">
 
+    <resultMap id="baseResultMap" type="com.itheima.pojo.Setmeal">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+
+    <resultMap
+            id="findByIdResultMap"
+            type="com.itheima.pojo.Setmeal"
+            extends="baseResultMap">
+        <collection
+                property="checkGroups"
+                ofType="com.itheima.pojo.CheckGroup"
+                column="id"
+                select="com.itheima.dao.CheckGroupDao.findCheckGroupById"
+        ></collection>
+    </resultMap>
 
     <select id="selectByConditiong" parameterType="String" resultType="com.itheima.pojo.Setmeal">
         select * from  t_setmeal
@@ -21,4 +45,11 @@
         ( #{name}, #{code}, #{helpCode}, #{sex}, #{age}, #{price}, #{remark}, #{attention}, #{img})
     </insert>
 
+    <select id="getSetmeal" resultType="com.itheima.pojo.Setmeal">
+        select * from t_setmeal
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="findByIdResultMap">
+        select * from t_setmeal where id = #{id}
+    </select>
 </mapper>
