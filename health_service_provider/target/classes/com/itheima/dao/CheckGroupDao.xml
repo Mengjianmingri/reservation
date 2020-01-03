@@ -3,6 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itheima.dao.CheckGroupDao">
 
+    <resultMap id="baseResultMap" type="com.itheima.pojo.CheckGroup">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+    </resultMap>
+
+    <resultMap
+            id="findByIdResultMap"
+            type="com.itheima.pojo.CheckGroup"
+            extends="baseResultMap">
+        <collection
+                property="checkItems"
+                ofType="com.itheima.pojo.CheckItem"
+                column="id"
+                select="com.itheima.dao.CheckItemDao.findCheckItemById"
+        >
+
+        </collection>
+    </resultMap>
+
 
     <select id="selectByConditiong" parameterType="String" resultType="com.itheima.pojo.CheckGroup">
         select * from  t_checkgroup
@@ -64,5 +88,9 @@
 
     <select id="findAll" resultType="com.itheima.pojo.CheckGroup">
         select * from t_checkgroup
+    </select>
+
+    <select id="findCheckGroupById" resultMap="findByIdResultMap">
+         SELECT * FROM t_checkgroup WHERE id IN(SELECT checkgroup_id FROM t_setmeal_checkgroup WHERE setmeal_id=#{id})
     </select>
 </mapper>

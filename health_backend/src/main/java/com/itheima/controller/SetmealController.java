@@ -74,7 +74,6 @@ public class SetmealController {
     @RequestMapping("/add1")
     public Result add1( Setmeal setmeal , Integer[] checkgroupIds,@RequestParam("file") MultipartFile imgFile){
         try {
-            setmealService.add(setmeal,checkgroupIds);
                //拿到前端传过来的img名字
             String originalFilename = imgFile.getOriginalFilename();
             //以最后一个.进行切割
@@ -83,6 +82,8 @@ public class SetmealController {
             String substring = originalFilename.substring(indexOf);
             //产生不重复的Id和.img进行拼接
             String fileName = UUID.randomUUID().toString() + substring;
+            setmeal.setImg(fileName);
+            setmealService.add(setmeal,checkgroupIds);
             QiniuUtils.upload2Qiniu(imgFile.getBytes(),fileName);
             return new Result(true,MessageConstant.ADD_SETMEAL_SUCCESS);
         } catch (Exception e) {
