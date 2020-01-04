@@ -61,6 +61,7 @@
                 </div>
                 <div class="table-content">
                     <ul class="table-list">
+                        <#if setmeal.checkGroups??>
 						<#list setmeal.checkGroups as checkgroup>
                             <li class="table-item">
                                 <div class="item flex2">${checkgroup.name}</div>
@@ -74,6 +75,7 @@
                                 <div class="item flex3">${checkgroup.remark}</div>
                             </li>
                         </#list>
+                        </#if>
                     </ul>
                 </div>
                 <div class="box-button">
