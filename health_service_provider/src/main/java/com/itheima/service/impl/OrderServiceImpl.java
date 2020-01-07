@@ -85,7 +85,6 @@ public class OrderServiceImpl implements OrderService {
         orderSettingDao.editReservationsByOrderDate(orderSetting);
         //System.out.println(order.getId());
         return new Result(true,MessageConstant.ORDER_SUCCESS,order.getId());
-
     }
 
     @Override

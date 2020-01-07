@@ -5,6 +5,7 @@ import com.itheima.pojo.Setmeal;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface SetmealDao {
     Page<Setmeal> selectByConditiong(String queryString);
@@ -16,4 +17,6 @@ public interface SetmealDao {
     List<Setmeal> getSetmeal();
 
     Setmeal findById(Integer id);
+
+    List<Map<String, Object>> findSetmelCount();
 }

@@ -56,4 +56,10 @@
     <insert id="setSetmelAndCheckGroup" parameterType="map">
         insert into t_setmeal_checkgroup (setmeal_id, checkgroup_id) values (#{setmealId},#{checkgroupId})
     </insert>
+
+    <select id="findSetmelCount" resultType="map">
+      SELECT s.name,count(o.id) value
+       from t_setmeal s ,t_order o
+       WHERE s.id = o.setmeal_id GROUP BY s.name
+    </select>
 </mapper>

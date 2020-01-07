@@ -270,7 +270,9 @@
                                     this.$message.error(res.data.message)
                                 }
                             }
-                            ).finally(()=>{
+                            ).catch((r)=>{
+                                this.showmessage(r);
+                            }).finally(()=>{
                                this. findPage();
                             })
                         }else {
@@ -279,6 +281,16 @@
                         }
                     });
                 },
+                showmessage(r){
+                    if(r == 'Error: Request failed with status code 403'){
+                        this.$message.error('无访问权限');
+                        return;
+                    }else {
+                        this.$message.error('未知错误');
+                        return;
+                    }
+                },
+
                 //分页查询bug版
                 _findPage(){
                     this.pagination.currentPage=1,
@@ -324,8 +336,10 @@
                 // 删除
                 handleDelete(row) {
                     //alert(row.id)
+
                     this.$confirm("是真的要删除吗？","提示",{type:"warning"}).then(()=>{
                         axios.get("/checkitem/delete.do?id="+row.id).then((res)=>{
+
                             if(res.data.flag){
                                 this.$message({
                                     message:res.data.message,
@@ -334,6 +348,8 @@
                             }else {
                                 this.$message.error(res.data.message)
                             }
+                        }).catch((r)=>{
+                            this.showmessage(r);
                         })
                         }
                     ).finally(()=>{

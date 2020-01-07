@@ -40,7 +40,7 @@
                     <div class="input-row">
                         <label>验证码</label>
                         <div class="loginInput">
-                            <input v-model="loginInfo.validateCode" style="width:80%" id='password' type="password" placeholder="请输入验证码">
+                            <input v-model="loginInfo.validateCode" style="width:80%" id='password' type="text" placeholder="请输入验证码">
                         </div>
                     </div>
                     <div class="input-row" style="font-size: 12px">
@@ -83,7 +83,7 @@
                         this.$message.error('请输入正确的手机号');
                         return false;
                     }
-                    axios.post("/login/check.do",this.loginInfo).then((response) => {
+                    axios.post("/member/login.do",this.loginInfo).then((response) => {
                         if(response.data.flag){
                             //登录成功,跳转到index.html
                             window.location.href="index.html";

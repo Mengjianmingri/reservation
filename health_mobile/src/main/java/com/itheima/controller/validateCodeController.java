@@ -19,15 +19,31 @@ public class validateCodeController {
 
     @RequestMapping("/send4Order")
     public Result send4Order(String telephone)throws Exception{
+        String code4String = ValidateCodeUtils.generateValidateCode4String(4);
       try {
-          String code4String = ValidateCodeUtils.generateValidateCode4String(4);
+
           SMSUtils.sendShortMessage("SMS_181851207",telephone,code4String);
-          jedisPool.getResource().setex(telephone+ RedisMessageConstant.SENDTYPE_ORDER,6666666,code4String);
-          return new Result(true, MessageConstant.SEND_VALIDATECODE_SUCCESS);
+
       }catch (Exception e){
           e.printStackTrace();
           return new Result(true,MessageConstant.SEND_VALIDATECODE_FAIL);
       }
+        jedisPool.getResource().setex(telephone+ RedisMessageConstant.SENDTYPE_ORDER,6666666,code4String);
+        return new Result(true, MessageConstant.SEND_VALIDATECODE_SUCCESS);
+    }
 
+    @RequestMapping("/send4Login")
+    public Result send4Login(String telephone)throws Exception{
+        String code4String = ValidateCodeUtils.generateValidateCode4String(6);
+        try {
+
+            SMSUtils.sendShortMessage("SMS_181851207",telephone,code4String);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(true,MessageConstant.SEND_VALIDATECODE_FAIL);
+        }
+        jedisPool.getResource().setex(telephone+ RedisMessageConstant.SENDTYPE_LOGIN,6666666,code4String);
+        return new Result(true, MessageConstant.SEND_VALIDATECODE_SUCCESS);
     }
 }

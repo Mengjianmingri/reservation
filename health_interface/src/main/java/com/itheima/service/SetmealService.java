@@ -5,6 +5,7 @@ import com.itheima.entity.QueryPageBean;
 import com.itheima.pojo.Setmeal;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SetmealService {
     PageResult findpage(QueryPageBean queryPageBean);
@@ -14,4 +15,6 @@ public interface SetmealService {
     List<Setmeal> getSetmeal();
 
     Setmeal findById(Integer id);
+
+    List<Map<String, Object>> findSetmelCount();
 }
