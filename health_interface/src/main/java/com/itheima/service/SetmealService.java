@@ -18,4 +18,9 @@ public interface SetmealService {
 
     List<Map<String, Object>> findSetmelCount();
 
+    Setmeal findSetmel(Integer id);
+
+    List<Integer> findCheckGroups(Integer id);
+
+    void edit(Setmeal setmeal, Integer[] checkgroupIds);
 }

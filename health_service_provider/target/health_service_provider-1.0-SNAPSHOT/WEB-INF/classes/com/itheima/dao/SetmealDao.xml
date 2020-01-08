@@ -54,7 +54,8 @@
     </select>
 
     <insert id="setSetmelAndCheckGroup" parameterType="map">
-        insert into t_setmeal_checkgroup (setmeal_id, checkgroup_id) values (#{setmealId},#{checkgroupId})
+        insert into t_setmeal_checkgroup (setmeal_id, checkgroup_id)
+        values (#{setmealId},#{checkgroupId})
     </insert>
 
     <select id="findSetmelCount" resultType="map">
@@ -62,4 +63,50 @@
        from t_setmeal s ,t_order o
        WHERE s.id = o.setmeal_id GROUP BY s.name
     </select>
+
+    <select id="findSetmel" parameterType="int" resultType="com.itheima.pojo.Setmeal">
+        select * from t_setmeal where id=#{id}
+    </select>
+    <select id="findCheckGroups" parameterType="int" resultType="int">
+        select checkgroup_id from t_setmeal_checkgroup where setmeal_id=#{id};
+    </select>
+
+    <update id="edit" parameterType="com.itheima.pojo.Setmeal">
+        update t_setmeal
+        <set >
+
+            <if test="name != null" >
+                name = #{name},
+            </if>
+            <if test="code != null" >
+                code = #{code},
+            </if>
+            <if test="helpCode != null" >
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex},
+            </if>
+            <if test="age != null" >
+                age = #{age},
+            </if>
+            <if test="price != null" >
+                price = #{price},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark},
+            </if>
+            <if test="attention != null" >
+                attention = #{attention},
+            </if>
+            <if test="img != null" >
+                img = #{img},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="delCheckGroups" parameterType="int">
+        delete from t_setmeal_checkgroup where setmeal_id=#{id}
+    </delete>
+
 </mapper>
