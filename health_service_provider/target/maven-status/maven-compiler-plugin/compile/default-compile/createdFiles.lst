@@ -1,3 +1,4 @@
+com\itheima\service\impl\ReportServiceImpl.class
 com\itheima\service\impl\UserServiceImpl.class
 com\itheima\dao\OrderSettingDao.class
 com\itheima\dao\CheckGroupDao.class

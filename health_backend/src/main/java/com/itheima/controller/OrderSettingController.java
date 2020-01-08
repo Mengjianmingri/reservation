@@ -37,7 +37,7 @@ public class OrderSettingController {
                 }
                 orderSettingService.add(orderSettings);
             }
-            return new Result(false, MessageConstant.IMPORT_ORDERSETTING_SUCCESS);
+            return new Result(true, MessageConstant.IMPORT_ORDERSETTING_SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
             return new Result(false, MessageConstant.IMPORT_ORDERSETTING_FAIL);
