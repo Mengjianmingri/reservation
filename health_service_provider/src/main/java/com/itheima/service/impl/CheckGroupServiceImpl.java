@@ -59,6 +59,16 @@ public class CheckGroupServiceImpl implements CheckGroupService {
         return checkGroupDao.findAll();
     }
 
+    @Override
+    public void delete(Integer id) {
+        Long count = checkGroupDao.findSetmealCountByCheckGroupId(id);
+        if(count>0){
+            throw new RuntimeException("删不掉");
+        }
+        checkGroupDao.deleteCheckGroupAndCheckItemByCheckGroupId(id);
+        checkGroupDao.delete(id);
+    }
+
     private void setCheckGroupAndCheckItem(CheckGroup checkGroup, Integer[] checkitemIds) {
         Integer checkGroupId = checkGroup.getId();
         if(checkitemIds!=null&&checkitemIds.length!=0){

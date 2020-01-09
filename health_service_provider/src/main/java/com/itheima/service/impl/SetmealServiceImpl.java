@@ -120,6 +120,12 @@ public class SetmealServiceImpl implements SetmealService {
         setSetmealAndCheckGroup(setmeal,checkgroupIds);
     }
 
+    @Override
+    public void delete(Integer id) {
+        setmealDao.delCheckGroups(id);
+        setmealDao.delete(id);
+    }
+
     public void setSetmealAndCheckGroup(Setmeal setmeal, Integer[] checkgroupIds){
             Integer setmealId = setmeal.getId();
             if(checkgroupIds!=null&&checkgroupIds.length!=0){

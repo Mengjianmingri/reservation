@@ -384,7 +384,7 @@
 				  }
 				  return isJPG && isLt2M;
                 },
-                //编辑
+                //编辑数据回显
                 handleUpdate(row){
                         this.activeName='first'
                         this.dialogFormVisible4Edit=true;
@@ -409,6 +409,7 @@
 
 
                 },
+                //修改数据
                 handleEdit(){
                     this.dialogFormVisible4Edit=false;
                     axios.post("/setmeal/edit.do?checkgroupIds="+this.checkgroupIds,this.formData).then((res)=>{
@@ -459,6 +460,22 @@
                         this.pagination.total=res.data.total
                     })
                 },
+                //删除套餐
+                handleDelete(row){
+                    this.findPage()
+                    axios.get("/setmeal/delete.do?id="+row.id).then((res)=>{
+                        if(res.data.flag){
+                            this.$message({
+                                message:res.data.message,
+                                type:"success"
+                            })
+                            this.findPage()
+                        }else {
+                            this.$message.error(res.data.message)
+                        }
+                    })
+                },
+
                 // 重置表单
                 resetForm() {
                     this.formData={};

@@ -83,7 +83,6 @@ public class SetmealController {
             e.printStackTrace();
             return new Result(false,"编辑套餐失败");
         }
-
     }
 
 
@@ -102,6 +101,17 @@ public class SetmealController {
     public Result findCheckGroups(Integer id){
         List<Integer> list =  setmealService.findCheckGroups(id);
         return new Result(true,"回显数据成功",list);
+    }
+
+    @RequestMapping("/delete")
+    public Result delete(Integer id){
+        try {
+            setmealService.delete(id);
+            return new Result(true,"删除数据成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false,"删除数据失败");
+        }
     }
 
    /* @RequestMapping("/add1")

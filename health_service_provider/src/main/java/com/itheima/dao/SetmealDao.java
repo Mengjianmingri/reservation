@@ -25,4 +25,6 @@ public interface SetmealDao {
     void edit(Setmeal setmeal);
 
     void delCheckGroups(Integer setmealId);
+
+    void delete(Integer id);
 }

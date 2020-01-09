@@ -83,5 +83,16 @@ public class CheackGroupController {
         }
     }
 
+    @RequestMapping("/delete")
+    public Result delete(Integer id){
+        try {
+           checkGroupService.delete(id);
+            return new Result(true,"删除检查组成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false,"删除检查组失败");
+        }
+    }
+
 
 }

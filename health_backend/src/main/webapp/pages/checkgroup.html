@@ -296,6 +296,21 @@
                         this.findPage()
                     })
                 },
+                //删除检查组
+                handleDelete(row){
+                    this.findPage()
+                    axios.get("/checkgroup/delete.do?id="+row.id).then((res)=>{
+                        if(res.data.flag){
+                            this.$message({
+                                message:res.data.message,
+                                type:"success"
+                            })
+                            this.findPage()
+                        }else {
+                            this.$message.error(res.data.message)
+                        }
+                    })
+                },
                 //添加
                 handleAdd () {
                     this.dialogFormVisible=false;
@@ -379,9 +394,6 @@
                     this.pagination.currentPage=currentPage;
                     this.findPage()
                 },
-                // 删除
-                handleDelete(row) {
-                }
             }
         })
     </script>
