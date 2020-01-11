@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.SetmealDao">
+
+    <resultMap id="baseResultMap" type="com.itheima.pojo.Setmeal">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+
+    <resultMap
+            id="findByIdResultMap"
+            type="com.itheima.pojo.Setmeal"
+            extends="baseResultMap">
+        <collection
+                property="checkGroups"
+                ofType="com.itheima.pojo.CheckGroup"
+                column="id"
+                select="com.itheima.dao.CheckGroupDao.findCheckGroupById"
+        ></collection>
+    </resultMap>
+
+    <select id="selectByConditiong" parameterType="String" resultType="com.itheima.pojo.Setmeal">
+        select * from  t_setmeal
+        <if test="value!=null and value.length>0">
+            where code = #{value} or name = #{value}
+        </if>
+    </select>
+
+    <insert id="add" parameterType="com.itheima.pojo.Setmeal">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_setmeal
+        ( name, code, helpCode, sex, age, price, remark, attention, img)
+        values
+        ( #{name}, #{code}, #{helpCode}, #{sex}, #{age}, #{price}, #{remark}, #{attention}, #{img})
+    </insert>
+
+    <select id="getSetmeal" resultType="com.itheima.pojo.Setmeal">
+        select * from t_setmeal
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="findByIdResultMap">
+        select * from t_setmeal where id = #{id}
+    </select>
+
+    <insert id="setSetmelAndCheckGroup" parameterType="map">
+        insert into t_setmeal_checkgroup (setmeal_id, checkgroup_id)
+        values (#{setmealId},#{checkgroupId})
+    </insert>
+
+    <select id="findSetmelCount" resultType="map">
+      SELECT s.name,count(o.id) value
+       from t_setmeal s ,t_order o
+       WHERE s.id = o.setmeal_id GROUP BY s.name
+    </select>
+
+    <select id="findSetmel" parameterType="int" resultType="com.itheima.pojo.Setmeal">
+        select * from t_setmeal where id=#{id}
+    </select>
+    <select id="findCheckGroups" parameterType="int" resultType="int">
+        select checkgroup_id from t_setmeal_checkgroup where setmeal_id=#{id};
+    </select>
+
+    <update id="edit" parameterType="com.itheima.pojo.Setmeal">
+        update t_setmeal
+        <set >
+
+            <if test="name != null" >
+                name = #{name},
+            </if>
+            <if test="code != null" >
+                code = #{code},
+            </if>
+            <if test="helpCode != null" >
+                helpCode = #{helpCode},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex},
+            </if>
+            <if test="age != null" >
+                age = #{age},
+            </if>
+            <if test="price != null" >
+                price = #{price},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark},
+            </if>
+            <if test="attention != null" >
+                attention = #{attention},
+            </if>
+            <if test="img != null" >
+                img = #{img},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="delCheckGroups" parameterType="int">
+        delete from t_setmeal_checkgroup where setmeal_id=#{id}
+    </delete>
+
+    <delete id="delete" parameterType="int">
+        delete from t_setmeal where id=#{id}
+    </delete>
+
+</mapper>
