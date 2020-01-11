@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +40,7 @@ public class ReportController {
     ReportService reportService;
 
     @RequestMapping("/getMemberReport")
+    @PreAuthorize("hasAnyAuthority('REPORT_VIEW')")
     public Result getMemberReport(){
 
         try {
@@ -61,6 +63,7 @@ public class ReportController {
     }
 
     @RequestMapping("/getSetmealReport")
+    @PreAuthorize("hasAnyAuthority('REPORT_VIEW')")
     public Result getSetmealReport(){
         try {
             Map<String,Object> map = new HashMap<>();
@@ -80,6 +83,7 @@ public class ReportController {
     }
 
     @RequestMapping("/getBusinessReportData")
+    @PreAuthorize("hasAnyAuthority('REPORT_VIEW')")
     public Result getBusinessReportData(){
         try {
             Map<String,Object> result = reportService.getBusinessReportData();

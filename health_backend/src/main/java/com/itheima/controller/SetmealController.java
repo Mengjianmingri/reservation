@@ -11,6 +11,7 @@ import com.itheima.pojo.Setmeal;
 import com.itheima.service.SetmealService;
 import com.itheima.utils.QiniuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,6 +60,7 @@ public class SetmealController {
     }
 
     @RequestMapping("/add")
+    @PreAuthorize("hasAnyAuthority('SETMEAL_ADD')")
     public Result add(@RequestBody Setmeal setmeal , Integer[] checkgroupIds){
         try {
             setmealService.add(setmeal,checkgroupIds);
@@ -73,6 +75,7 @@ public class SetmealController {
     }
 
     @RequestMapping("/edit")
+    @PreAuthorize("hasAnyAuthority('SETMEAL_EDIT')")
     public Result edit(@RequestBody Setmeal setmeal , Integer[] checkgroupIds){
         try {
             setmealService.edit(setmeal,checkgroupIds);
@@ -87,6 +90,7 @@ public class SetmealController {
 
 
     @RequestMapping("/findSetmel")
+    @PreAuthorize("hasAnyAuthority('SETMEAL_QUERY')")
     public Result findSetmel(Integer id){
         try {
             Setmeal setmeal = setmealService.findSetmel(id);
@@ -104,6 +108,7 @@ public class SetmealController {
     }
 
     @RequestMapping("/delete")
+    @PreAuthorize("hasAnyAuthority('SETMEAL_DELETE')")
     public Result delete(Integer id){
         try {
             setmealService.delete(id);

@@ -7,6 +7,7 @@ import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckItemService;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,7 @@ public class CheackItemController {
         }
     }
     @RequestMapping("/edit")
+    @PreAuthorize("hasAnyAuthority('CHECKITEM_EDIT')")
     public Result edit(@RequestBody CheckItem checkItem){
         try {
             checkItemService.edit(checkItem);
@@ -66,6 +68,7 @@ public class CheackItemController {
     }
 
     @RequestMapping("/findByid")
+    @PreAuthorize("hasAnyAuthority('CHECKITEM_QUERY')")
     public Result findByid(Integer id){
         try {
             CheckItem checkItem = checkItemService.findByid(id);

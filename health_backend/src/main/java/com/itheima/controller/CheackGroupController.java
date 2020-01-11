@@ -9,6 +9,8 @@ import com.itheima.pojo.CheckGroup;
 import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckGroupService;
 import com.itheima.service.CheckItemService;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,7 @@ public class CheackGroupController {
 
 
     @RequestMapping("/add")
+    @PreAuthorize("hasAnyAuthority('CHECKGROUP_ADD')")
     public Result add(@RequestBody CheckGroup checkGroup , Integer[] checkitemIds){
        try {
            checkGroupService.add(checkGroup,checkitemIds);
@@ -40,6 +43,7 @@ public class CheackGroupController {
     }
 
     @RequestMapping("/findCheckGroupByid")
+    @PreAuthorize("hasAnyAuthority('CHECKGROUP_QUERY')")
     public Result findCheckGroupByid(Integer id){
         try {
             CheckGroup checkGroup = checkGroupService.findCheckGroupByid(id);
@@ -62,6 +66,7 @@ public class CheackGroupController {
     }
 
     @RequestMapping("/edit")
+    @PreAuthorize("hasAnyAuthority('CHECKGROUP_EDIT')")
     public Result edit(@RequestBody CheckGroup checkGroup , Integer[] checkitemIds){
         try {
             checkGroupService.edit(checkGroup,checkitemIds);
@@ -84,6 +89,7 @@ public class CheackGroupController {
     }
 
     @RequestMapping("/delete")
+    @PreAuthorize("hasAnyAuthority('CHECKGROUP_DELETE')")
     public Result delete(Integer id){
         try {
            checkGroupService.delete(id);
