@@ -7,6 +7,11 @@ import com.itheima.entity.Result;
 import com.itheima.service.MemberService;
 import com.itheima.service.ReportService;
 import com.itheima.service.SetmealService;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -153,5 +158,33 @@ public class ReportController {
 
     }
 
+
+    @RequestMapping("/exportBusinessReport4PDF")
+    public Result exportBusinessReport4PDF(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            //定义路径
+            String jrxml = request.getSession().getServletContext().getRealPath("template/health_business3.jrxml");
+            String jasper = request.getSession().getServletContext().getRealPath("template/health_business3.jasper");
+            //编译模板
+            JasperCompileManager.compileReportToFile(jrxml,jasper);
+
+            Map<String, Object> map = reportService.getBusinessReportData();
+            List<Map> hotSetmeal = (List<Map>) map.get("hotSetmeal");
+            //填充数据
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasper, map, new JRBeanCollectionDataSource(hotSetmeal));
+
+            ServletOutputStream out = response.getOutputStream(); response.setContentType("application/PDF");
+            response.setHeader("content-Disposition", "attachment;filename=report.PDF");
+           //输出文件
+            JasperExportManager.exportReportToPdfStream(jasperPrint,out);
+            out.flush();
+            out.close();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.GET_BUSINESS_REPORT_FAIL,null);
+        }
+
+    }
 
 }
