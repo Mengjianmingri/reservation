@@ -5,9 +5,7 @@ import com.itheima.pojo.Member;
 import java.util.List;
 
 public interface MemberService {
-    Member findByTelephone(String telephone);
-
-    void add(Member member);
-
-    List<Integer> findMemberCountByMonth(List<String> list);
+    public Member findByTelephone(String telephone);
+    public void add(Member member);
+    public List<Integer> findMemberCountByMonth(List<String> list);
 }

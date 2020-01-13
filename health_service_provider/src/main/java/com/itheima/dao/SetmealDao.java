@@ -8,23 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface SetmealDao {
-    Page<Setmeal> selectByConditiong(String queryString);
-
-    void add(Setmeal setmeal);
-
-    void setSetmelAndCheckGroup(HashMap<String, Integer> map);
-
-    List<Setmeal> getSetmeal();
-
-    Setmeal findById(Integer id);
-
-    List<Map<String, Object>> findSetmelCount();
-
-    List<Integer> findCheckGroups(Integer id);
-
-    void edit(Setmeal setmeal);
-
-    void delCheckGroups(Integer setmealId);
-
-    void delete(Integer id);
+    public Page<Setmeal> selectByConditiong(String queryString);
+    public void add(Setmeal setmeal);
+    public void setSetmelAndCheckGroup(HashMap<String, Integer> map);
+    public List<Setmeal> getSetmeal();
+    public Setmeal findById(Integer id);
+    public List<Map<String, Object>> findSetmelCount();
+    public List<Integer> findCheckGroups(Integer id);
+    public void edit(Setmeal setmeal);
+    public void delCheckGroups(Integer setmealId);
+    public void delete(Integer id);
 }

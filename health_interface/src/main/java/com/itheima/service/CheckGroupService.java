@@ -7,17 +7,11 @@ import com.itheima.pojo.CheckGroup;
 import java.util.List;
 
 public interface CheckGroupService {
-    PageResult pagequery(QueryPageBean queryPageBean);
-
-    void add(CheckGroup checkGroup, Integer[] checkitemIds);
-
-    CheckGroup findCheckGroupByid(Integer id);
-
-    List<Integer> findCheckItemByCheckGroupId(Integer id);
-
-    void edit(CheckGroup checkGroup, Integer[] checkitemIds);
-
-    List<CheckGroup> findAll();
-
-    void delete(Integer id);
+    public PageResult pagequery(QueryPageBean queryPageBean);
+    public void add(CheckGroup checkGroup, Integer[] checkitemIds);
+    public CheckGroup findCheckGroupByid(Integer id);
+    public List<Integer> findCheckItemByCheckGroupId(Integer id);
+    public void edit(CheckGroup checkGroup, Integer[] checkitemIds);
+    public List<CheckGroup> findAll();
+    public void delete(Integer id);
 }

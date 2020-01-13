@@ -11,7 +11,7 @@ new Vue({
         leftobj: []//用于装载页面显示的月份已经进行预约设置的数据
     },
     created: function () {//在vue初始化时调用
-        this.initData(null);
+        this.initData(new Date());
     },
     methods: {
         //预约设置

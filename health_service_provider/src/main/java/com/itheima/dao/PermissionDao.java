@@ -5,5 +5,5 @@ import com.itheima.pojo.Permission;
 import java.util.Set;
 
 public interface PermissionDao {
-    Set<Permission> findByRoleId(Integer roleId);
+    public Set<Permission> findByRoleId(Integer roleId);
 }

@@ -3,5 +3,5 @@ package com.itheima.service;
 import com.itheima.pojo.User;
 
 public interface UserService {
-    User fingUserByUsername(String username);
+    public User fingUserByUsername(String username);
 }

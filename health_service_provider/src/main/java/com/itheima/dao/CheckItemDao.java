@@ -7,17 +7,11 @@ import java.util.List;
 
 
 public interface CheckItemDao {
-    void add(CheckItem checkItem);
-
-    Page<CheckItem> selectByConditiong (String queryString);
-
-    long findCheckItemAndCheckGroupById(Integer id);
-
-    void delCheckItemById(Integer id);
-
-    void edit(CheckItem checkItem);
-
-    CheckItem findByid(Integer id);
-
-    List<CheckItem> findAll();
+    public void add(CheckItem checkItem);
+    public Page<CheckItem> selectByConditiong (String queryString);
+    public long findCheckItemAndCheckGroupById(Integer id);
+    public void delCheckItemById(Integer id);
+    public void edit(CheckItem checkItem);
+    public CheckItem findByid(Integer id);
+    public List<CheckItem> findAll();
 }

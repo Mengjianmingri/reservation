@@ -8,4 +8,97 @@
          WHERE r.id = ur.role_id and ur.user_id = #{userId}
     </select>
 
+    <!--分页查询-->
+    <select id="queryByString" resultType="com.itheima.pojo.Role" parameterType="string">
+        SELECT * from t_role
+        <if test="value != null and value.length >0">
+            where name=#{value}
+        </if>
+    </select>
+
+    <!--添加——回显菜单信息-->
+    <select id="findMenu" resultType="com.itheima.pojo.Menu">
+        select * from t_menu
+    </select>
+
+    <!--添加——回显权限信息-->
+    <select id="findPermission" resultType="com.itheima.pojo.Permission">
+        select * from t_permission
+    </select>
+
+    <!--添加角色-->
+    <insert id="add" parameterType="com.itheima.pojo.Role">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into  t_role (name, keyword, description)
+        values ( #{name}, #{keyword},#{description})
+    </insert>
+
+    <!--添加角色——权限中间表-->
+    <insert id="setRoleAndPermission" parameterType="map">
+        insert into t_role_permission (role_id, permission_id)
+        values (#{RoleId},#{PermessionId})
+    </insert>
+
+    <!--添加角色——菜单中间表-->
+    <insert id="setRoleAndMenu" parameterType="map">
+        insert into t_role_menu (role_id, menu_id)
+        values (#{RoleId},#{menuId})
+    </insert>
+
+    <!--编辑——回显角色信息-->
+    <select id="findByRoleId" parameterType="int" resultType="com.itheima.pojo.Role">
+        select * from t_role where id=#{id}
+    </select>
+
+    <!--编辑——回显权限信息多选框-->
+    <select id="findRoleAndPermessionById" resultType="int" parameterType="int">
+        select permission_id from t_role_permission where role_id=#{role_id}
+    </select>
+
+    <!--编辑——回显菜单信息多选框-->
+    <select id="findRoleAndMenuById" resultType="int" parameterType="int">
+        select menu_id from t_role_menu where role_id=#{role_id}
+    </select>
+
+    <!--编辑——修改角色信息-->
+    <update id="editRole" parameterType="com.itheima.pojo.Role">
+        update t_role
+        <set>
+            <if test="name != null">
+                name=#{name},
+            </if>
+
+            <if test="keyword != null">
+                keyword=#{keyword},
+            </if>
+
+            <if test="description != null">
+                description=#{description},
+            </if>
+        </set>
+        where  id=#{id}
+    </update>
+
+
+    <!--通过id删除角色——权限中间表-->
+    <delete id="delRoleAndPermession" parameterType="int">
+        delete from t_role_permission where role_id=#{role_id}
+    </delete>
+
+    <!--通过id删除角色——菜单中间表-->
+    <delete id="delRoleAndMenu" parameterType="int">
+        delete from t_role_menu where role_id=#{role_id}
+    </delete>
+
+    <!--查询角色表是否有关联的用户-->
+    <select id="findUserCountById" parameterType="int" resultType="long">
+        select count(*) from t_user_role where role_id=#{role_id}
+    </select>
+
+    <!--删除角色-->
+    <delete id="delRoleById" parameterType="int">
+        delete from t_role where id=#{id}
+    </delete>
 </mapper>
