@@ -1,12 +1,18 @@
 package com.itheima.jobs;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.constant.RedisConstant;
+import com.itheima.service.OrderSettingService;
+import com.itheima.utils.DateUtils;
 import com.itheima.utils.QiniuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 /**

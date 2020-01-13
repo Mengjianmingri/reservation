@@ -11,4 +11,8 @@ public interface OrderSettingService {
     List<Map> getOrderSettingByMonth(String date);
 
     void editNumberByDate(OrderSetting orderSetting);
+
+    List<Integer> findOrderSettingIdBy2Date(String mon);
+
+    void delOrderSettingById(int id);
 }

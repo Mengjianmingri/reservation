@@ -7,6 +7,7 @@ import com.itheima.entity.Result;
 import com.itheima.service.MemberService;
 import com.itheima.service.ReportService;
 import com.itheima.service.SetmealService;
+import com.itheima.utils.DateUtils;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -16,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,6 +62,44 @@ public class ReportController {
             e.printStackTrace();
             return new Result(false, MessageConstant.GET_MEMBER_NUMBER_REPORT_FAIL);
         }
+    }
+
+    @RequestMapping("/findtutu")
+    @PreAuthorize("hasAnyAuthority('REPORT_VIEW')")
+    public Result findtutu(@RequestBody Date [] dates){
+        try {
+
+            //获取要多少个月
+            String end_date = DateUtils.parseDate2String(dates[0]);
+            String start_date = DateUtils.parseDate2String(dates[1]);
+            String[] end_split = end_date.split("-");
+            String[] start_split = start_date.split("-");
+            //获取年份差值
+            int start_end_year = Integer.parseInt(start_split[0])-Integer.parseInt(end_split[0]);
+            //获取月份差值
+            int start_end_month = start_end_year*12+Integer.parseInt(start_split[1])-Integer.parseInt(end_split[1]);
+            System.out.println(start_end_month);
+
+            Map<String,Object> map = new HashMap();
+            List<String> list = new ArrayList<>();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dates[1]);
+            calendar.add(Calendar.MONTH,-start_end_month);
+            list.add(new SimpleDateFormat("yyyy.MM").format(dates[0]));
+            for (int i = 0; i <start_end_month ; i++) {
+                calendar.add(Calendar.MONTH,1);
+                list.add(new SimpleDateFormat("yyyy.MM").format(calendar.getTime()));
+            }
+            List<Integer> memberCount = memberService.findMemberCountByMonth(list);
+            map.put("months",list);
+            map.put("memberCount",memberCount);
+            return new Result(true, MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS,map);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @RequestMapping("/getSetmealReport")

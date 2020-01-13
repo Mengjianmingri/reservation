@@ -18,4 +18,8 @@ public interface OrderSettingDao {
     OrderSetting findDtaeByOrderDate(Date parseString2Date);
 
     void editReservationsByOrderDate(OrderSetting orderSetting);
+
+    List<Integer> findOrderSettingIdBy2Date(Map map);
+
+    void deleteOrderSetting(int id);
 }
