@@ -15,7 +15,31 @@
     <!--开启spring注解使用-->
 
     <context:component-scan base-package="com.itheima.jobs"></context:component-scan>
-
+    <bean id="initAllMap" class="com.itheima.jobs.InitAllMap"></bean>
+    <bean id="jobDetail1"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 注入目标对象 -->
+        <property name="targetObject" ref="initAllMap"/>
+        <!-- 注入目标方法 -->
+        <property name="targetMethod" value="doInit"/>
+    </bean>
+    <bean id="myTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 注入JobDetail -->
+        <property name="jobDetail" ref="jobDetail1"/>
+        <!-- 指定触发的时间，基于Cron表达式 -->
+        <property name="cronExpression">
+            <value>0 0/3 * * * ? *</value>
+        </property>
+    </bean>
+    <!-- 注册一个统一的调度工厂，通过这个调度工厂调度任务 -->
+    <bean id="scheduler1" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- 注入多个触发器 -->
+        <property name="triggers">
+            <list>
+                <ref bean="myTrigger1"/>
+            </list>
+        </property>
+    </bean>
     <!-- 配置处理定时任务的线程池 -->
     <task:executor id="executor" pool-size="10"/>
 

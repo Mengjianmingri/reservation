@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>传智健康</title>
+    <meta name="description" content="传智健康">
+    <meta name="keywords" content="传智健康">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .grid-content {
+            border-radius: 4px;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body class="hold-transition">
+<div id="app">
+    <div class="content-header">
+        <h1>今日接口调用次数榜单<small>(每五秒更新一次)</small></h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>接口调用实时榜单</el-breadcrumb-item>
+            <el-breadcrumb-item>今日</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="app-container">
+        <div class="box" style="height: 900px">
+            <div class="excelTitle" >
+                <el-button @click="exportExcel">往日榜单</el-button>
+            </div>
+            <!--<div class="excelTime">日期：{{reportData.reportDate}}</div>-->
+            <table class="exceTable" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td colspan="4" class="headBody">SetmealController</td>
+                </tr>
+                <tr class="tabletrBg textCenter">
+                    <td>方法名</td>
+                    <td>调用次数</td>
+                </tr>
+                <tr v-for="s in sortSetmealController">
+                    <td>{{s.name}}</td>
+                    <td>{{s.value}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="headBody">CheckItemController</td>
+                </tr>
+                <tr class="tabletrBg textCenter">
+                    <td>方法名</td>
+                    <td>调用次数</td>
+                </tr>
+                <tr v-for="s in sortCheckItemController">
+                    <td>{{s.name}}</td>
+                    <td>{{s.value}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="headBody">CheckGroupController</td>
+                </tr>
+                <tr class="tabletrBg textCenter">
+                    <td>方法名</td>
+                    <td>调用次数</td>
+                </tr>
+                <tr v-for="s in sortCheckGroupController">
+                    <td>{{s.name}}</td>
+                    <td>{{s.value}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div></body>
+<!-- 引入组件库 -->
+<script src="../js/vue.js"></script>
+<script src="../plugins/elementui/index.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            // timer:null,//声明一个定时器
+            // count:0,
+            date:null,
+            reportData:{
+                className: {
+                    CheckGroupController: [],
+                    CheckItemController: [],
+                    SetmealController: []
+                },
+                rankingMap: {
+                    CheckGroupController: [],
+                    CheckItemController: [],
+                    SetmealController: []
+                }
+            }
+        },
+        computed:{
+            sortCheckGroupController:function(){
+                return sortByKey(this.reportData.rankingMap.CheckGroupController,'value');
+            },
+            sortCheckItemController:function(){
+                return sortByKey(this.reportData.rankingMap.CheckItemController,'value');
+            },
+            sortSetmealController:function(){
+                return sortByKey(this.reportData.rankingMap.SetmealController,'value');
+            }
+
+        },
+        created() {
+            this.add();
+            this.date = this.initDate();
+            var a = 0;
+            window.setInterval(() => {
+                a++;
+                console.log(a);
+                setTimeout(this.add(), 0)
+            }, 5000)
+        },
+        methods:{
+            add(){
+                // this.count ++;
+                axios.post("/ranking/getRanking.do").then((res)=>{
+                    if(res.data.flag){
+                        this.reportData = res.data.data;
+                    }else{
+                        this.$message.error(res.data.message);
+                    }
+                });
+                // if (this.count == 5) {
+                //     window.clearInterval(this.timer);
+                // }
+            },
+            exportExcel(){},
+            initDate(){
+                var a = new Date();
+                return this.dateFtt("yyyyMMdd",a)
+            },
+            dateFtt(fmt,date) {
+                var o = {
+                    "M+" : date.getMonth()+1,                 //月份
+                    "d+" : date.getDate(),                    //日
+                    "h+" : date.getHours(),                   //小时
+                    "m+" : date.getMinutes(),                 //分
+                    "s+" : date.getSeconds(),                 //秒
+                    "q+" : Math.floor((date.getMonth()+3)/3), //季度
+                    "S"  : date.getMilliseconds()             //毫秒
+                };
+                if(/(y+)/.test(fmt))
+                    fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));
+                for(var k in o)
+                    if(new RegExp("("+ k +")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                return fmt;
+    }
+    }
+    });
+    function sortByKey(array,key){  //(数组、排序的列)
+        return array.sort(function(a,b){
+            var x=a[key];
+            var y=b[key];
+            return ((x<y)?-1:((x>y)?1:0));
+        });
+    }
+
+//     var timer;//声明一个定时器
+//     var count = 0;
+//     function test()
+//     {
+// //每隔500毫秒执行一次add()方法
+//         timer = window.setInterval("add()",500);
+//     }
+//     function add(){
+//         axios.post("/ranking/getRanking.do").then((res)=>{
+//             if(res.data.flag){
+//                 this.reportData = res.data.data;
+//             }else{
+//                 this.$message.error(res.data.message);
+//             }
+//         });
+//         if (count == 5)
+//         {
+// //如果count值达到5，清空定时器
+//             window.clearInterval(timer);
+//         }
+//     }
+</script>
+</html>
