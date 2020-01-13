@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.itheima.dao.OrderSettingDao;
 import com.itheima.pojo.OrderSetting;
 import com.itheima.service.OrderSettingService;
+import com.itheima.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +58,27 @@ public class OrderSettingServiceImpl implements OrderSettingService {
         }else {
             orderSettingDao.add(orderSetting);
         }
+    }
+
+   //定时删除前一个月的预约设置
+    public List<Integer> findOrderSettingIdBy2Date(String mon)  {
+        try {
+            String start_date = mon+"-01";
+            String end_date = mon+"-31";
+           Date start = DateUtils.parseString2Date(start_date);
+            Date end = DateUtils.parseString2Date(end_date);
+            Map<Object, Object> map = new HashMap<>();
+            map.put("start_date",start);
+            map.put("end_date",end);
+            List<Integer> ids = orderSettingDao.findOrderSettingIdBy2Date(map);
+            return ids;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    public void delOrderSettingById(int id) {
+        orderSettingDao.deleteOrderSetting(id);
     }
 }

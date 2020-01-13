@@ -19,6 +19,7 @@ var vue = new Vue({
     },
     created() {
         this.findPage();
+
     },
     methods: {
         //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象

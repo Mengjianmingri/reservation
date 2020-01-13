@@ -289,8 +289,21 @@ public class DateUtils {
         try {
             System.out.println("本周一" + parseDate2String(getThisWeekMonday()));
             System.out.println("本月一日" + parseDate2String(getFirstDay4ThisMonth()));
+            Date today = DateUtils.getToday();
+            String str_today = DateUtils.parseDate2String(today);
+            System.out.println(str_today);
+            String[] split = str_today.split("-");
+            System.out.println(split[0]);
+            if(split[1].equals("01")){
+                split[0]=String.valueOf(Integer.parseInt(split[0])-1);
+                split[1]="12";
+                System.out.println(str_today);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

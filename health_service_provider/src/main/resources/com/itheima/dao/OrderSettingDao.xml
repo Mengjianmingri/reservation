@@ -29,4 +29,12 @@
     <update id="editReservationsByOrderDate" parameterType="com.itheima.pojo.OrderSetting">
         update t_ordersetting set reservations =#{reservations} where orderDate =#{orderDate}
     </update>
+
+    <select id="findOrderSettingIdBy2Date" parameterType="map" resultType="int">
+       SELECT id from t_ordersetting where orderDate BETWEEN #{start_date} AND  #{end_date}
+    </select>
+
+    <delete id="deleteOrderSetting" parameterType="int">
+        delete from t_ordersetting where id=#{id}
+    </delete>
 </mapper>

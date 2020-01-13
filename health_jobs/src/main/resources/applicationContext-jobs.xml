@@ -21,8 +21,12 @@
 
     <!--  配置处理 异步定时任务的  线程池 -->
     <task:scheduler id="scheduler" pool-size="10"/>
-
-
+    <!-- 指定应用名称 -->
+    <dubbo:application name="health_job" />
+    <!--指定服务注册中心地址-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <!--批量扫描-->
+    <dubbo:annotation package="com.itheima.jobs" />
     <!-- 启用annotation方式 -->
     <task:annotation-driven scheduler="scheduler" executor="executor" proxy-target-class="true"/>
 </beans>
