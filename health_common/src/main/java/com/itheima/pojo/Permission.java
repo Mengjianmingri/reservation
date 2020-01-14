@@ -15,9 +15,22 @@ public class Permission implements Serializable{
     private Set<Role> roles = new HashSet<Role>(0);
 
     private Integer delivery;//启用状态
-
     public Integer getDelivery() {
         return delivery;
+    }
+    public boolean flag1;
+
+    public boolean isFlag1() {
+        return flag1;
+    }
+
+    public void setFlag1(boolean flag1) {
+        this.flag1 = flag1;
+        if (flag1==true){
+            delivery=1;
+        }else {
+            flag1=false;
+        }
     }
 
     public void setDelivery(Integer delivery) {

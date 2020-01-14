@@ -47,9 +47,9 @@ public class PermissionController {
     }
 
     @RequestMapping("/edit")
-    public Result edit(@RequestBody Permission permission){
+    public Result edit(@RequestBody Permission formData){
         try {
-            permissionService.edit(permission);
+            permissionService.edit(formData);
             return new Result(true,"修改权限项成功");
         } catch (Exception e) {
             e.printStackTrace();

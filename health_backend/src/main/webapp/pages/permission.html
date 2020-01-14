@@ -9,7 +9,7 @@
         <meta name="keywords" content="传智健康">
         <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
         <!-- 引入样式 -->
-        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
         <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="../css/style.css">
 
@@ -51,8 +51,8 @@
 
                         <el-table-column prop="sort" label="排序项" align="center" sortable>
                             <template slot-scope="scope">
-                                <i class="el-icon-sort-down"></i>
                                 <i class="el-icon-sort-up"></i>
+                                <i class="el-icon-sort-down"></i>
                             </template>
                         </el-table-column>
 
@@ -104,7 +104,7 @@
                                         <hr>
                                         <el-switch
                                                 style="display: block"
-                                                v-model="formData.delivery"
+                                                v-model="formData.flag1"
                                                 active-color="#13ce66"
                                                 inactive-color="#ff4949"
                                                 active-text="已启用"
@@ -152,13 +152,13 @@
                                         <hr width="1%">
                                         <el-switch
                                                 style="display: block"
-                                                v-model="formData.delivery"
+                                                v-model="formData.flag1"
                                                 active-color="#13ce66"
                                                 inactive-color="#ff4949"
                                                 active-text="已启用"
                                                 inactive-text="未启用"
-                                                active v-model="true"
-                                                inactive v-model="false"
+                                                active v-model="1"
+                                                inactive v-model="0"
                                                 @change=change($event,formData.delivery)>
                                         </el-switch>
                                     </el-form-item>
@@ -177,7 +177,7 @@
     </body>
     <!-- 引入组件库 -->
     <script src="../js/vue.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/axios-0.18.0.js"></script>
     <script>
@@ -233,6 +233,7 @@
                             })
                         }else {
                             this.$message.error(res.data.message);
+                            this.findPage();
                         }
                     }).finally(()=>{
                         this.findPage();
