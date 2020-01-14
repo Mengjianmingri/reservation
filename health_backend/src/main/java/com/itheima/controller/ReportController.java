@@ -231,4 +231,72 @@ public class ReportController {
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //会员性别占比饼子图
+    @RequestMapping("/getSexReport")
+    public Result getSexReport(){
+        //转为json
+        Map<String,Object> data = new HashMap<>();
+
+
+        try {
+            List<Map<String,Object>> memberCount = memberService.findMemberCount();
+            data.put("memberCount",memberCount);
+
+            List<String> memberNames = new ArrayList<>();
+            for (Map<String, Object> map : memberCount) {
+                String name = (String) map.get("name");
+                memberNames.add(name);
+            }
+            data.put("memberNames",memberNames);
+            return new Result(true,MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS,data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false,MessageConstant.GET_MEMBER_NUMBER_REPORT_FAIL);
+        }
+    }
+
+
+
+
+    //会员年龄占比饼子图  方法1
+    @RequestMapping("/getAgeReport")
+    public Result getAgeReport(){
+        //转为json
+        Map<String,Object> data = new HashMap<>();
+
+
+        try {
+            //传count
+            List<Map<String,Object>> memberCount = memberService.findMemberAgeCount();
+            data.put("memberCount",memberCount);
+
+            //传name
+            List<String> memberNames = new ArrayList<>();
+            for (Map<String, Object> map : memberCount) {
+                String name = (String) map.get("name");
+                memberNames.add(name);
+            }
+            data.put("memberNames",memberNames);
+            return new Result(true,MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS,data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false,MessageConstant.GET_MEMBER_NUMBER_REPORT_FAIL);
+        }
+    }
+
+
 }

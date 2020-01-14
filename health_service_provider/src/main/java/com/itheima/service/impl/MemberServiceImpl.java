@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass =MemberService.class)
 @Transactional
@@ -42,5 +43,17 @@ public class MemberServiceImpl implements MemberService {
             memberCount.add(memberCountBeforeDate);
         }
         return memberCount;
+    }
+
+
+
+    //查询会员男女占比
+    public List<Map<String, Object>> findMemberCount() {
+        return memberDao.findMemberCount();
+    }
+
+    @Override
+    public List<Map<String, Object>> findMemberAgeCount() {
+        return memberDao.findMemberAgeCount();
     }
 }
