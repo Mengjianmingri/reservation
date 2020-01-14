@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../plugins/echarts/echarts.js"></script>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>统计分析<small>会员年龄占比</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>统计分析</el-breadcrumb-item>
+                    <el-breadcrumb-item>会员年龄占比</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                    <div id="chart1" style="height:600px;"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart1 = echarts.init(document.getElementById('chart1'));
+
+        // 使用刚指定的配置项和数据显示图表。
+        //myChart.setOption(option);
+        var colorArr = ["#218de0", "#01cbb3", "#85e647", "#5d5cda", "#05c5b0", "#c29927"];
+        var colorAlpha = ['rgba(60,170,211,0.05)', 'rgba(1,203,179,0.05)', 'rgba(133,230,71,0.05)', 'rgba(93,92,218,0.05)', 'rgba(5,197,176,0.05)', 'rgba(194,153,39,0.05)']
+       axios.get("/report/getAgeReport.do").then((res)=>{
+            myChart1.setOption({
+                backgroundColor: "#070707",
+                title : {
+                    text: '会员年龄占比',
+                    subtext: '',
+                    x:'center',
+                    fontSize:42
+                },
+                grid: {
+                    left: -100,
+                    // top: 50,
+                    // bottom: 10,
+                    right: 10,
+                    containLabel: true
+                },
+                tooltip : {//提示框组件
+                    trigger: 'item',//触发类型，在饼形图中为item
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"//提示内容格式
+                },
+                legend: {
+                    show: false
+                },
+                polar: {},
+                angleAxis: {
+                    interval: 1,
+                    type: 'category',
+                    data: [],
+                    z: 10,
+                    axisLine: {
+                        show: false,
+                        lineStyle: {
+                            color: "#0B4A6B",
+                            width: 1,
+                            type: "solid"
+                        },
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        show: true,
+                        color: "#0B4A6B",
+                        margin: 8,
+                        fontSize: 16
+                    },
+                },
+                radiusAxis: {
+                    min: 20,
+                    max: 120,
+                    interval: 20,
+                    axisLine: {
+                        show: false,
+                        lineStyle: {
+                            color: "#0B3E5E",
+                            width: 1,
+                            type: "solid"
+                        },
+                    },
+                    axisLabel: {
+                        formatter: '{value} %',
+                        show: false,
+                        padding: [0, 0, 20, 0],
+                        color: "#0B3E5E",
+                        fontSize: 16
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: "#07385e",
+                            width: 2,
+                            type: "dashed"
+                        }
+                    }
+                },
+                calculable: true,
+                series : [
+                    //数据
+                    {
+                        name: '会员年龄占比',
+                        type: 'pie',
+                        radius: '80%',
+                        roseType: 'radius',
+                        zlevel: 10,
+                        startAngle: 100,
+                        label: {
+                            normal: {
+                                formatter: ['{b|{b}}', '{d|{d}%}'].join('\n'),
+                                rich: {
+                                    b: {
+                                        color: '#3bd2fe',
+                                        fontSize: 14,
+                                        lineHeight: 20,
+                                        align:"center",
+                                    },
+                                    d: {
+                                        color: '#d0fffc',
+                                        fontSize: 14,
+                                        height: 20,
+                                        align:"center",
+                                    },
+                                },
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: true,
+                                length: 10,
+                                length2: 45,
+                                lineStyle: {
+                                    color: '#0096b1'
+
+                                }
+                            },
+                            emphasis: {
+                                show: false
+                            }
+                        },
+                        data:res.data.data.memberCount,
+                        itemStyle: {
+                            borderColor: colorArr[0],
+                            borderWidth: 2,
+                            shadowBlur: 20,
+                            shadowColor: colorArr[0],
+                            shadowOffsetx: 25,
+                            shadowOffsety: 20,
+                            color: colorAlpha[0]
+                        },
+                    }
+                ]
+                                });
+        });
+    </script>
+</html>

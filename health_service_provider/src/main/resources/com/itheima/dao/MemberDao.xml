@@ -95,4 +95,47 @@
     <select id="findMemberTotalCount" resultType="int">
         select count(id) from t_member
     </select>
+
+
+
+    <!--查询会员男女有多少人-->
+    <select id="findMemberCount" resultType="map">
+        SELECT	m.sex as name,COUNT(m.sex) as value FROM t_member m WHERE sex IN('男','女') GROUP BY sex
+    </select>
+
+    <!--<select id="findMemberAgeCount" resultType="map">-->
+        <!--SELECT ageproportion AS 'name',COUNT(*) AS 'value' FROM-->
+        <!--(-->
+        <!--SELECT-->
+        <!--CASE-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>0 AND YEAR(NOW())-YEAR(birthday) &lt;= 10 THEN '0-10岁'-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>10 AND YEAR(NOW())-YEAR(birthday)&lt;= 20 THEN '10-20岁'-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>20 AND YEAR(NOW())-YEAR(birthday)&lt;=30 THEN '20-30岁'-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>30 AND YEAR(NOW())-YEAR(birthday)&lt;=40 THEN '30-40岁'-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>40 AND YEAR(NOW())-YEAR(birthday)&lt;=50 THEN '40-50岁'-->
+        <!--WHEN YEAR(NOW())-YEAR(birthday)>50 AND YEAR(NOW())-YEAR(birthday)&lt;=60 THEN '50-60岁'-->
+        <!--ELSE '60岁以上'-->
+
+        <!--END-->
+        <!--AS ageproportion FROM t_member-->
+        <!--)a GROUP BY ageproportion-->
+    <!--</select>-->
+
+    <select id="findMemberAgeCount" resultType="map">
+        SELECT ageproportion AS 'name',COUNT(*) AS 'value' FROM
+        (
+        SELECT
+        CASE
+        WHEN YEAR(NOW())-YEAR(birthday)>0 AND YEAR(NOW())-YEAR(birthday) &lt;= 10 THEN '0-10岁'
+        WHEN YEAR(NOW())-YEAR(birthday)>10 AND YEAR(NOW())-YEAR(birthday)&lt;= 20 THEN '10-20岁'
+        WHEN YEAR(NOW())-YEAR(birthday)>20 AND YEAR(NOW())-YEAR(birthday)&lt;=30 THEN '20-30岁'
+        WHEN YEAR(NOW())-YEAR(birthday)>30 AND YEAR(NOW())-YEAR(birthday)&lt;=40 THEN '30-40岁'
+        WHEN YEAR(NOW())-YEAR(birthday)>40 AND YEAR(NOW())-YEAR(birthday)&lt;=50 THEN '40-50岁'
+        WHEN YEAR(NOW())-YEAR(birthday)>50 AND YEAR(NOW())-YEAR(birthday)&lt;=60 THEN '50-60岁'
+        ELSE '60岁以上'
+
+        END
+        AS ageproportion FROM t_member
+        )a GROUP BY ageproportion
+    </select>
 </mapper>
