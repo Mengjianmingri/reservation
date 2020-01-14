@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+
+
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>系统设置<small>权限管理</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>系统设置</el-breadcrumb-item>
+                    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <div class="filter-container">
+                        <el-input placeholder="权限名称/启用状态" v-model="pagination.queryString" style="width: 200px;"
+                                  class="filter-item"></el-input>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                    </div>
+
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column type="index" align="center" label="序号"></el-table-column>
+
+                        <el-table-column prop="name" label="权限名称" align="center"></el-table-column>
+
+                        <el-table-column prop="keyword" label="权限关键字" align="center"></el-table-column>
+
+                        <el-table-column prop="description" label="权限说明" align="center"></el-table-column>
+
+                        <el-table-column prop="delivery" label="启用状态" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.delivery == '1' ? '启用' : '未启用'}}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column prop="sort" label="排序项" align="center" sortable>
+                            <template slot-scope="scope">
+                                <i class="el-icon-sort-down"></i>
+                                <i class="el-icon-sort-up"></i>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <!--为分页组件绑定current-changge事件-->
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增权限项" :visible.sync="dialogFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules"
+                                     label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="权限名称" prop="name">
+                                            <el-input v-model="formData.name"/>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="权限关键字" prop="keyword">
+                                            <el-input v-model="formData.keyword"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="权限说明" prop="description">
+                                            <el-input v-model="formData.description" type="textarea"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-form-item label="启用状态" prop="delivery">
+                                        <hr>
+                                        <el-switch
+                                                style="display: block"
+                                                v-model="formData.delivery"
+                                                active-color="#13ce66"
+                                                inactive-color="#ff4949"
+                                                active-text="已启用"
+                                                inactive-text="未启用"
+                                                active-value="1"
+                                                inactive-value="0"
+                                                @change=change($event,formData.delivery)>
+                                        </el-switch>
+                                    </el-form-item>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 编辑标签弹层 -->
+                    <div class="edit-form">
+                        <el-dialog title="编辑权限项" :visible.sync="dialogFormVisible4Edit">
+                            <el-form ref="dataEditForm" :model="formData" :rules="rules"
+                                     label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="权限名称" prop="name">
+                                            <el-input v-model="formData.name"/>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="权限关键字" prop="keyword">
+                                            <el-input v-model="formData.keyword"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="权限说明" prop="description">
+                                            <el-input v-model="formData.description" type="textarea"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-form-item label="启用状态" prop="delivery">
+                                        <hr width="1%">
+                                        <el-switch
+                                                style="display: block"
+                                                v-model="formData.delivery"
+                                                active-color="#13ce66"
+                                                inactive-color="#ff4949"
+                                                active-text="已启用"
+                                                inactive-text="未启用"
+                                                active v-model="true"
+                                                inactive v-model="false"
+                                                @change=change($event,formData.delivery)>
+                                        </el-switch>
+                                    </el-form-item>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                pagination: {//分页相关模型数据
+					  currentPage: 1,//当前页码
+					  pageSize:10,//每页显示的记录数
+					  total:0,//总记录数
+					  queryString:null//查询条件
+				},
+				dataList: [],//当前页要展示的分页列表数据
+                formData: {},//表单数据
+                dialogFormVisible: false,//增加表单是否可见
+                dialogFormVisible4Edit:false,//编辑表单是否可见
+                rules: {//校验规则
+                    keyword: [{ required: true, message: '项目编码为必填项', trigger: 'blur' }],
+                    name: [{ required: true, message: '项目名称为必填项', trigger: 'blur' }]
+                }
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.findPage();
+            },
+            methods: {
+                //分页查询
+                findPage() {
+                    var param={
+                        currentPage: this.pagination.currentPage,
+                        pageSize: this.pagination.pageSize,
+                        queryString: this.pagination.queryString
+                    };
+                    //请求后台
+                    axios.post("/permission/findByPage.do",param).then((res)=>{
+                            this.dataList = res.data.rows;
+                            this.pagination.total = res.data.total;
+                    });
+                },
+                //接受表单中开关传参
+                change(event){
+                    //接收参数1或0
+                    console.log(event);
+                },
+                //编辑
+                handleEdit() {
+                    axios.post("/permission/edit.do",this.formData).then((res)=>{
+                        this.dialogFormVisible4Edit = false;
+                        if (res.data.flag) {
+                            this.$message({
+                                message:res.data.message,
+                                type:'success'
+                            })
+                        }else {
+                            this.$message.error(res.data.message);
+                        }
+                    }).finally(()=>{
+                        this.findPage();
+                    });
+                },
+                //添加
+                handleAdd () {
+                    axios.post("/permission/add.do",this.formData).then((res)=>{
+                        this.dialogFormVisible=false;
+                        if (res.data.flag) {
+                            this.$message({
+                                message:res.data.message,
+                                type:'success'
+                            })
+                        }else {
+                            this.$message.error(res.data.message);
+                        }
+                    }).finally(()=>{
+                       this.findPage();
+                    });
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                },
+                // 弹出添加窗口
+                handleCreate() {
+                    this.dialogFormVisible=true;
+                    this.resetForm();
+                    this.$nextTick(()=>{
+                        this.$refs.dataAddForm.clearValidate();
+                    })
+                },
+                // 弹出编辑窗口
+                handleUpdate(row) {
+                    this.dialogFormVisible4Edit=true;
+                    axios.get("/permission/findPermissionById.do?id="+row.id).then((res)=>{
+                        console.log(row.id);
+                        if (res.data.flag) {
+                            this.formData = res.data.data;
+                            // this.delivery=(res.data.delivery?1:0)
+                           // this.formData.delivery.active=res.data.data.delivery;
+                            if (res.data.data.delivery==false) {
+                                this.formData.delivery.active=false;
+                            }
+                        }else{
+                            this.$message.error("获取数据失败,请刷新页面");
+                        }
+                    })
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
+                },
+                // 删除
+                handleDelete(row) {
+                    // alert(row.id)
+                    this.$confirm("确认删除?","提示",{type: 'warning'}).then(()=>{
+                        axios.get("/permission/del.do?id="+row.id).then((res)=>{
+                            if (!res.data.flag) {
+                                //删除失败
+                                this.$message.error(res.date.message);
+                                this.findPage();
+                            }else {
+                                //删除成功
+                                this.$message({
+                                    message:res.data.message,
+                                    type:'success'
+                                });
+                                this.findPage();
+                            }
+                        }).finally(()=>{
+                            this.findPage();
+                        });
+                    });
+                },
+                //权限不足提示
+                /*showMessage(r){
+                    if(r == 'Error: Request failed with status code 403'){
+                        //权限不足
+                        this.$message.error('无访问权限');
+                        return;
+                    }else{
+                        this.$message.error('未知错误');
+                        return;
+                    }
+                }*/
+            }
+        })
+    </script>
+</html>
