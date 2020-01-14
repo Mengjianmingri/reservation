@@ -1,8 +1,6 @@
-package com.itheima.service.impl;
+package com.itheima.service;
 
-import com.alibaba.dubbo.config.annotation.Service;
 import com.itheima.pojo.MyTuple;
-import com.itheima.service.PlayInterfaceCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -16,8 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service(interfaceClass = PlayInterfaceCountService.class)
-public class PlayInterfaceCountServiceImpl implements PlayInterfaceCountService {
+
+public class PlayInterfaceCountService {
     @Autowired
     private JedisPool jedisPool;
     private volatile Map<String, Set<MyTuple>> ConcurrentHashMap;
@@ -26,6 +24,7 @@ public class PlayInterfaceCountServiceImpl implements PlayInterfaceCountService 
 
     //    volatile ConcurrentHashMap<String,ConcurrentHashMap<String, Set<MyTuple>>> oldDateMap;
     public void play(){
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         String method = Thread.currentThread().getStackTrace()[2].getMethodName();
         String[] classNameArray = Thread.currentThread().getStackTrace()[2].getClassName().split("\\.");
         String classnameAndDate = classNameArray[classNameArray.length - 1]+"_"+date;

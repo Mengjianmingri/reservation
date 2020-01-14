@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.entity.Result;
 import com.itheima.pojo.MyTuple;
 import com.itheima.service.PlayInterfaceCountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InterfaceRankingController {
     private static final String RANKING_SUCCESS ="榜单查询成功";
     private static final String RANKING_FAIL ="榜单查询失败";
-    @Reference
+    @Autowired
     private PlayInterfaceCountService playInterfaceCountService;
     /**
      * 实时榜单排行接口实现

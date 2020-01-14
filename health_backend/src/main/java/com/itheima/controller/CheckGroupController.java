@@ -6,10 +6,9 @@ import com.itheima.entity.PageResult;
 import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.CheckGroup;
-import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckGroupService;
-import com.itheima.service.CheckItemService;
-import org.springframework.security.access.prepost.PostAuthorize;
+import com.itheima.service.PlayInterfaceCountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +18,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/checkgroup")
-public class CheackGroupController {
+public class CheckGroupController {
 
     @Reference
     CheckGroupService checkGroupService;
 
+    @Autowired
+    private PlayInterfaceCountService playInterfaceCountService;
+
     @RequestMapping("/findPage")
     public PageResult findPage(@RequestBody QueryPageBean queryPageBean){
+        playInterfaceCountService.play();
       return checkGroupService.pagequery(queryPageBean) ;
     }
 
@@ -33,6 +36,7 @@ public class CheackGroupController {
     @RequestMapping("/add")
     @PreAuthorize("hasAnyAuthority('CHECKGROUP_ADD')")
     public Result add(@RequestBody CheckGroup checkGroup , Integer[] checkitemIds){
+        playInterfaceCountService.play();
        try {
            checkGroupService.add(checkGroup,checkitemIds);
            return new Result(true,MessageConstant.ADD_CHECKGROUP_SUCCESS);
@@ -45,6 +49,7 @@ public class CheackGroupController {
     @RequestMapping("/findCheckGroupByid")
     @PreAuthorize("hasAnyAuthority('CHECKGROUP_QUERY')")
     public Result findCheckGroupByid(Integer id){
+        playInterfaceCountService.play();
         try {
             CheckGroup checkGroup = checkGroupService.findCheckGroupByid(id);
             return new Result(true,MessageConstant.QUERY_CHECKGROUP_SUCCESS,checkGroup);
@@ -56,6 +61,7 @@ public class CheackGroupController {
 
     @RequestMapping("/findCheckItemByCheckGroupId")
     public Result findCheckItemByCheckGroupId(Integer id){
+        playInterfaceCountService.play();
         try {
             List<Integer> checkitemIds =checkGroupService.findCheckItemByCheckGroupId(id);
             return new Result(true,MessageConstant.QUERY_CHECKITEM_SUCCESS,checkitemIds);
@@ -68,6 +74,7 @@ public class CheackGroupController {
     @RequestMapping("/edit")
     @PreAuthorize("hasAnyAuthority('CHECKGROUP_EDIT')")
     public Result edit(@RequestBody CheckGroup checkGroup , Integer[] checkitemIds){
+        playInterfaceCountService.play();
         try {
             checkGroupService.edit(checkGroup,checkitemIds);
             return new Result(true,MessageConstant.ADD_CHECKGROUP_SUCCESS);
@@ -79,6 +86,7 @@ public class CheackGroupController {
 
     @RequestMapping("/findAll")
     public Result findAll(){
+        playInterfaceCountService.play();
         try {
             List<CheckGroup> checkGroupList = checkGroupService.findAll();
             return new Result(true,MessageConstant.QUERY_CHECKGROUP_SUCCESS,checkGroupList);
@@ -91,6 +99,7 @@ public class CheackGroupController {
     @RequestMapping("/delete")
     @PreAuthorize("hasAnyAuthority('CHECKGROUP_DELETE')")
     public Result delete(Integer id){
+        playInterfaceCountService.play();
         try {
            checkGroupService.delete(id);
             return new Result(true,"删除检查组成功");

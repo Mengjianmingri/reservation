@@ -35,4 +35,71 @@
         select * from t_menu where parentMenuId =#{menuId}
     </select>
 
+
+    <select id="selectByCondition" parameterType="string" resultType="com.itheima.pojo.Menu">
+        select * from t_menu
+        <if test="value !=null and value.length > 0">
+            where name = #{value} or description = #{value}
+        </if>
+    </select>
+
+    <insert id="add" parameterType="com.itheima.pojo.Menu">
+        <selectKey order="AFTER" resultType="java.lang.Integer" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_menu(name, linkUrl, path, priority, icon, description, parentMenuId, level) values
+        (#{name},#{linkUrl},#{path},#{priority},#{icon},#{description},#{parentMenuId},#{level});
+    </insert>
+
+    <delete id="delRoleAndMenuByMenuId" parameterType="int">
+        delete from t_role_menu where menu_id = #{menu_id}
+    </delete>
+
+    <delete id="delMenuById" parameterType="int">
+        delete from t_menu where id = #{id}
+    </delete>
+
+    <select id="findAllOneleve" resultType="com.itheima.pojo.Menu">
+        select * from t_menu where level = 1
+    </select>
+
+    <update id="updateMenu" parameterType="com.itheima.pojo.Menu">
+        update t_menu
+        <set>
+            <if test="name !=null">
+                name = #{name},
+            </if>
+            <if test="linkUrl !=null">
+                linkUrl = #{linkUrl},
+            </if>
+            <if test="path !=null">
+                path = #{path},
+            </if>
+            <if test="priority !=null">
+                priority = #{priority},
+            </if>
+            <if test="description !=null">
+                description = #{description},
+            </if>
+            <if test="icon !=null">
+                icon = #{icon},
+            </if>
+            <if test="parentMenuId !=null">
+                parentMenuId = #{parentMenuId},
+            </if>
+            <if test="level !=null">
+                level = #{level}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="findByparentMenuId" parameterType="int" resultType="com.itheima.pojo.Menu">
+        select * from t_menu where parentMenuId = #{parentMenuId}
+    </select>
+
+    <select id="findMenuByid" parameterType="int" resultType="com.itheima.pojo.Menu">
+        select * from t_menu where id = #{id}
+    </select>
+
 </mapper>

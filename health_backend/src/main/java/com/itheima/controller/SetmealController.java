@@ -8,6 +8,7 @@ import com.itheima.entity.PageResult;
 import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.Setmeal;
+import com.itheima.service.PlayInterfaceCountService;
 import com.itheima.service.SetmealService;
 import com.itheima.utils.QiniuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,8 @@ public class SetmealController {
 
     @Reference
     SetmealService setmealService;
-
+    @Autowired
+    private PlayInterfaceCountService playInterfaceCountService;
     @Autowired
     JedisPool jedisPool;
     @RequestMapping("/upload")
@@ -56,12 +58,14 @@ public class SetmealController {
 
     @RequestMapping("/findPage")
     public PageResult findPage (@RequestBody QueryPageBean queryPageBean){
+        playInterfaceCountService.play();
         return setmealService.findpage(queryPageBean);
     }
 
     @RequestMapping("/add")
     @PreAuthorize("hasAnyAuthority('SETMEAL_ADD')")
     public Result add(@RequestBody Setmeal setmeal , Integer[] checkgroupIds){
+        playInterfaceCountService.play();
         try {
             setmealService.add(setmeal,checkgroupIds);
             String img = setmeal.getImg();
@@ -77,6 +81,7 @@ public class SetmealController {
     @RequestMapping("/edit")
     @PreAuthorize("hasAnyAuthority('SETMEAL_EDIT')")
     public Result edit(@RequestBody Setmeal setmeal , Integer[] checkgroupIds){
+        playInterfaceCountService.play();
         try {
             setmealService.edit(setmeal,checkgroupIds);
             String img = setmeal.getImg();
@@ -92,6 +97,7 @@ public class SetmealController {
     @RequestMapping("/findSetmel")
     @PreAuthorize("hasAnyAuthority('SETMEAL_QUERY')")
     public Result findSetmel(Integer id){
+        playInterfaceCountService.play();
         try {
             Setmeal setmeal = setmealService.findSetmel(id);
             return new Result(true,"回显数据成功",setmeal);
@@ -103,6 +109,7 @@ public class SetmealController {
 
     @RequestMapping("/findCheckGroups")
     public Result findCheckGroups(Integer id){
+        playInterfaceCountService.play();
         List<Integer> list =  setmealService.findCheckGroups(id);
         return new Result(true,"回显数据成功",list);
     }
@@ -110,6 +117,7 @@ public class SetmealController {
     @RequestMapping("/delete")
     @PreAuthorize("hasAnyAuthority('SETMEAL_DELETE')")
     public Result delete(Integer id){
+        playInterfaceCountService.play();
         try {
             setmealService.delete(id);
             return new Result(true,"删除数据成功");

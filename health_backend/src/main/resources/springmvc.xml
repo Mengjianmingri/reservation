@@ -44,7 +44,8 @@
         <property name="maxInMemorySize" value="4096" />
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
-
+    <bean id="playInterfaceCountService" class="com.itheima.service.PlayInterfaceCountService">
+    </bean>
     <import resource="classpath:spring-security.xml"/>
     <import resource="classpath:spring-redis.xml"/>
 </beans>

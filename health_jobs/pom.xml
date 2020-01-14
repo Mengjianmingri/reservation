@@ -34,6 +34,11 @@
         <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz-jobs</artifactId>
     </dependency>
+        <dependency>
+            <groupId>com.itheima</groupId>
+            <artifactId>health_interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

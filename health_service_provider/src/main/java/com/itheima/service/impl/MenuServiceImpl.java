@@ -1,9 +1,12 @@
 package com.itheima.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.itheima.dao.MenuDao;
 import com.itheima.dao.RoleDao;
 import com.itheima.dao.UserDao;
+import com.itheima.entity.PageResult;
 import com.itheima.pojo.Menu;
 import com.itheima.pojo.Permission;
 import com.itheima.pojo.Role;
@@ -48,5 +51,73 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return menus;
+    }
+
+    @Override
+    public PageResult pageQuery(Integer currentpage, Integer pagesize, String queryString) {
+        PageHelper.startPage(currentpage,pagesize);
+        Page<Menu> page = menuDao.selectByCondition(queryString);
+        return new PageResult(page.getTotal(),page.getResult());
+    }
+
+    @Override
+    public void delMenuById(Integer id){
+        menuDao.delRoleAndMenuByMenuId(id);
+        menuDao.delMenuById(id);
+    }
+
+    @Override
+    public List<Menu> findAllOneleve() {
+        return menuDao.findAllOneleve();
+    }
+
+    @Override
+    public void add(Menu menu) {
+        menuDao.add(menu);
+        Integer id = menu.getId();
+        Integer parentMenuId = menu.getParentMenuId();
+
+        List<Menu> menuList=null;
+        if (parentMenuId!=null){
+            //根据父级ID获取最后一条数据
+            menuList = menuDao.findByparentMenuId(parentMenuId);
+        }else {
+            menuList = menuDao.findAllOneleve();
+        }
+
+        Menu m = new Menu();
+        for (int i = 0; i < menuList.size(); i++) {
+            m = menuList.get(menuList.size() - 2);
+        }
+        //获取上一条数据的path
+        String path1 = m.getPath();
+        String s1 = path1.substring(path1.length()-1, path1.length());
+
+        int i = Integer.parseInt(s1);
+        int i1 = i + 1;
+        String s = String.valueOf(i1);
+
+        String s2 = path1.substring(0, path1.length() - 1);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(s2);
+        sb.append(s);
+        String path = sb.toString();
+
+        Menu mm = new Menu();
+        mm.setId(id);
+        mm.setPriority(i1);
+        mm.setPath(path);
+        menuDao.updateMenu(mm);
+    }
+
+    @Override
+    public Menu findById(Integer id) {
+        return menuDao.findMenuByid(id);
+    }
+
+    @Override
+    public void edit(Menu menu) {
+        menuDao.updateMenu(menu);
     }
 }
