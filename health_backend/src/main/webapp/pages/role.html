@@ -167,11 +167,11 @@
                                         <tbody>
                                         <tr v-for="p in tableDataForPermission">
                                             <td>
-                                                <input :id="p.id" v-model="permessionIds" type="checkbox" :value="p.id">
+                                                <input :id="p.keyword" v-model="permessionIds" type="checkbox" :value="p.keyword">
                                             </td>
-                                            <td><label :for="p.id">{{p.name}}</label></td>
-                                            <td><label :for="p.id">{{p.keyword}}</label></td>
-                                            <td><label :for="p.id">{{p.description}}</label></td>
+                                            <td><label :for="p.keyword">{{p.name}}</label></td>
+                                            <td><label :for="p.keyword">{{p.keyword}}</label></td>
+                                            <td><label :for="p.keyword">{{p.description}}</label></td>
                                         </tr>
                                         </tbody>
                                     </table>

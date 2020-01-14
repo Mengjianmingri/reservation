@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+        <!-- 引入组件库 -->
+
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script src="../js/vue.js"></script>
+        <script src="../plugins/elementui/index.js"></script>
+        <script src="../js/axios-0.18.0.js"></script>
+        <style>
+            .avatar-uploader .el-upload {
+                border: 1px dashed #d9d9d9;
+                border-radius: 6px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+            }
+            .avatar-uploader .el-upload:hover {
+                border-color: #409EFF;
+            }
+            .avatar-uploader-icon {
+                font-size: 28px;
+                color: #8c939d;
+                width: 178px;
+                height: 178px;
+                line-height: 178px;
+                text-align: center;
+            }
+            .avatar {
+                width: 178px;
+                height: 178px;
+                display: block;
+            }
+            .datatable {
+                position: relative;
+                box-sizing: border-box;
+                -webkit-box-flex: 1;
+                width: 100%;
+                max-width: 100%;
+                font-size: 14px;
+                color: rgb(96, 98, 102);
+                overflow: hidden;
+                flex: 1 1 0%;
+            }
+            .datatable td, .datatable th {
+                padding: 12px 0;
+                min-width: 0;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                text-overflow: ellipsis;
+                vertical-align: middle;
+                position: relative;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>用户管理</h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <div class="filter-container">
+                        <el-input placeholder="编码/名称/助记码" v-model="pagination.queryString" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"></el-input>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                    </div>
+                    <el-table size="small" current-row-key="userid" :data="dataList" stripe highlight-current-row>
+                        <el-table-column type="index" align="center" label="序号"></el-table-column>
+                        <el-table-column prop="birthdaystr" label="生日" align="center"></el-table-column>
+                        <el-table-column prop="gender" label="性别" align="center">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.gender == '0'? ' ':scope.row.gender== '1' ? '男' : '女'}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="username" label="用户名称" align="center"></el-table-column>
+                        <el-table-column prop="telephone" label="手机号码" align="center"></el-table-column>
+                        <el-table-column prop="remark" label="用户说明" align="center"></el-table-column>
+                        <el-table-column prop="station" label="状态" align="center"></el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                                <el-button size="mini" type="danger" @click="deletUser(scope.row)" >删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
+                            <template>
+                                <el-tabs v-model="activeName" type="card">
+                                    <el-tab-pane label="基本信息" name="first">
+                                        <el-form label-position="right" label-width="100px">
+                                            <el-row>
+                                                <div class="date">
+                                                    <el-col :span="12">
+                                                        <el-form-item label="用户生日">
+                                                            <div class="block">
+                                                                <el-date-picker
+                                                                        v-model="formData.birthday"
+                                                                        type="date"
+                                                                        placeholder="选择日期">
+                                                                </el-date-picker>
+                                                            </div>
+                                                        </el-form-item>
+                                                    </el-col>
+                                                </div>
+
+                                                <el-col :span="12">
+                                                    <el-form-item label="用户名称">
+                                                        <el-input v-model="formData.username"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="性别">
+                                                        <el-select v-model="formData.gender">
+                                                            <el-option label="男" value="1"></el-option>
+                                                            <el-option label="女" value="2"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="用户密码">
+                                                        <el-input v-model="formData.password"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="手机号码">
+                                                        <el-input v-model="formData.telephone"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="状态">
+                                                        <el-input v-model="formData.station"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="上传图片">
+                                                        <el-upload
+                                                                class="avatar-uploader"
+                                                                action="/user/upload.do"
+                                                                :auto-upload="autoUpload"
+                                                                name="imgFile"
+                                                                :show-file-list="false"
+                                                                :on-success="handleAvatarSuccess"
+                                                                :before-upload="beforeAvatarUpload">
+                                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                        </el-upload>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="用户说明">
+                                                        <el-input v-model="formData.remark" type="textarea"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                        </el-form>
+                                    </el-tab-pane>
+                                    <el-tab-pane label="角色信息" name="second">
+										<div class="checkScrol">
+											<table class="datatable">
+												<thead>
+												<tr>
+													<th>选择</th>
+													<th>角色名称</th>
+													<th>角色关键字</th>
+													<th>描述</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr v-for="c in tableData">
+													<td>
+														<input :id="c.id" v-model="roleIds" type="checkbox" :value="c.id">
+													</td>
+													<td><label :for="c.id">{{c.name}}</label></td>
+													<td><label :for="c.id">{{c.keyword}}</label></td>
+													<td><label :for="c.id">{{c.description}}</label></td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+                                    </el-tab-pane>
+                                </el-tabs>
+                            </template>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                    <div class="add-form">
+                        <el-dialog title="编辑用户" :visible.sync="dialogFormVisible4Edit">
+                            <template>
+                                <el-tabs v-model="activeName" type="card">
+                                    <el-tab-pane label="基本信息" name="first">
+                                        <el-form label-position="right" label-width="100px">
+                                            <el-row>
+                                                <div class="date">
+                                                    <el-col :span="12">
+                                                        <el-form-item label="用户生日">
+                                                            <div class="block">
+                                                                <el-date-picker
+                                                                        v-model="formData.birthday"
+                                                                        type="date"
+                                                                        placeholder="选择日期">
+                                                                </el-date-picker>
+                                                            </div>
+                                                        </el-form-item>
+                                                    </el-col>
+                                                </div>
+
+                                                <el-col :span="12">
+                                                    <el-form-item label="用户名称">
+                                                        <el-input v-model="formData.username"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="性别">
+                                                        <el-select v-model="formData.gender">
+                                                            <el-option label="男" value="1"></el-option>
+                                                            <el-option label="女" value="2"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="手机号码">
+                                                        <el-input v-model="formData.telephone"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="状态">
+                                                        <el-input v-model="formData.station"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="上传图片">
+                                                        <el-upload
+                                                                class="avatar-uploader"
+                                                                action="/user/upload.do"
+                                                                :auto-upload="autoUpload"
+                                                                name="imgFile"
+                                                                :show-file-list="false"
+                                                                :on-success="handleAvatarSuccess"
+                                                                :before-upload="beforeAvatarUpload">
+                                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                        </el-upload>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="用户说明">
+                                                        <el-input v-model="formData.remark" type="textarea"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                        </el-form>
+                                    </el-tab-pane>
+                                    <el-tab-pane label="角色信息" name="second">
+                                        <div class="checkScrol">
+                                            <table class="datatable">
+                                                <thead>
+                                                <tr>
+                                                    <th>选择</th>
+                                                    <th>角色名称</th>
+                                                    <th>角色关键字</th>
+                                                    <th>描述</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="c in tableData">
+                                                    <td>
+                                                        <input :id="c.id" v-model="roleIds" type="checkbox" :value="c.id">
+                                                    </td>
+                                                    <td><label :for="c.id">{{c.name}}</label></td>
+                                                    <td><label :for="c.id">{{c.keyword}}</label></td>
+                                                    <td><label :for="c.id">{{c.description}}</label></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </el-tab-pane>
+                                </el-tabs>
+                            </template>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="edit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+    <script>
+        export default {
+            data() {
+                return {
+                    pickerOptions: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        },
+                        shortcuts: [{
+                            text: '今天',
+                            onClick(picker) {
+                                picker.$emit('pick', new Date());
+                            }
+                        }, {
+                            text: '昨天',
+                            onClick(picker) {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                                picker.$emit('pick', date);
+                            }
+                        }, {
+                            text: '一周前',
+                            onClick(picker) {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', date);
+                            }
+                        }]
+                    },
+                    value1: '',
+                    value2: '',
+                };
+            }
+        };
+    </script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                autoUpload:true,//自动上传
+                imageUrl:null,//模型数据，用于上传图片完成后图片预览
+                activeName:'first',//添加/编辑窗口Tab标签名称
+                pagination: {//分页相关属性
+                    currentPage: 1,
+                    pageSize:10,
+                    total:100,
+                    queryString:null,
+                },
+                dataList: [],//列表数据
+                formData: {},//表单数据
+                tableData:[],//添加表单窗口中角色列表数据
+                roleIds:[],//添加表单窗口中用户复选框对应id
+                dialogFormVisible: false,//控制添加窗口显示/隐藏
+                dialogFormVisible4Edit: false,//控制编辑窗口显示/隐藏
+
+                rules: {//校验规则
+                    birthday: [{ required: true, message: '用户生日为必填项', trigger: 'blur' }],
+                    username: [{ required: true, message: '用户名称为必填项', trigger: 'blur' }],
+                    gender: [{ required: true, message: '用户性别为必填项', trigger: 'blur' }],
+                    password: [{ required: true, message: '用户密码为必填项', trigger: 'blur' }],
+                   station: [{ required: true, message: '用户状态为必填项', trigger: 'blur' }],
+                }
+            },
+
+            created() {
+                this.findPage();
+            },
+            methods: {
+                edit(){
+                    this.dialogFormVisible4Edit=false;
+                    this.findPage()
+                    axios.post("/user/edit.do?roleIds="+this.roleIds,this.formData).then((res)=>{
+                        if(res.data.flag){
+                            this.$message({
+                                message:res.data.message,
+                                type:"success"
+                            })
+                        }else {
+                            this.$message.error(res.data.message)
+                        }
+                    }).finally(()=>{
+                        this.findPage()
+                    })
+                },
+                //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
+                handleAvatarSuccess(response, file) {
+                    this.imageUrl="http://q399i9518.bkt.clouddn.com/"+response.data;
+                    this.$message({
+                        message:response.message,
+                        type:response.flag ?'success':'error'
+                    });
+                    this.formData.img=response.data;
+                    console.log(response.data)
+                },
+                //上传图片之前执行
+                beforeAvatarUpload(file) {
+                    const isJPG = file.type === 'image/jpeg';
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+                    if (!isJPG) {
+                        this.$message.error('上传套餐图片只能是 JPG 格式!');
+                    }
+                    if (!isLt2M) {
+                        this.$message.error('上传套餐图片大小不能超过 2MB!');
+                    }
+                    return isJPG && isLt2M;
+                },
+                //添加
+                handleAdd () {
+                    this.dialogFormVisible=false;
+                    axios.post("/user/add.do?roleIds="+this.roleIds,this.formData).then((respost)=>{
+                        if (respost.data.flag){
+                            this.$message({
+                                message:respost.data.message,
+                                type:"success"
+                            })
+                        } else {
+                            this.$message.error(respost,data.message)
+                        }
+                    }).finally(()=>{
+                        this.findPage();
+                    })
+                },
+                _findPage(){
+                    this.pagination.currentPage=1
+                    this.findPage();
+                },
+                //分页查询
+                findPage() {
+                    var param={
+                        currentPage: this.pagination.currentPage,
+                        pageSize: this.pagination.pageSize,
+                        queryString:this.pagination.queryString
+                    }
+                    axios.post("/user/findPage.do",param).then((repost)=>{
+                        this.pagination.total=repost.data.total;
+                        this.dataList=repost.data.rows;
+                    })
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                    this.activeName='first';
+                    this.roleIds = [];
+                    this.imageUrl = null;
+                },
+                // 弹出添加窗口
+                handleCreate() {
+                    this.dialogFormVisible=true;
+                    this.resetForm();
+                    axios.post("/user/findAllRole.do").then((respost)=>{
+                        if (respost.data.flag){
+                            this.tableData=respost.data.data
+                        } else{
+                            this.$message.error(respost.data.message)
+                        }
+                    })
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage=currentPage;
+                    this.findPage()
+                },
+                deletUser(row) {
+                    //alert(row.id)
+                    this.$confirm("是真的要删除吗？","提示",{type:"warning"}).then(()=>{
+                            axios.get("/user/delete.do?id="+row.id).then((res)=>{
+                                if(res.data.flag){
+                                    this.$message({
+                                        message:res.data.message,
+                                        type:'success'
+                                    })
+                                    this.findPage()
+                                }else {
+                                    this.$message.error(res.data.message)
+                                    this.findPage()
+                                }
+                            }).catch((r)=>{
+                                this.showmessage(r);
+                            })
+                        }
+                    ).finally(()=>{
+                        this.findPage()
+                    })
+                },
+                handleUpdate(row){
+                    this.dialogFormVisible4Edit=true;
+                        this.activeName='first';
+                        axios.post("/user/finduserByid.do?id="+row.id).then((res)=>{
+                            if(res.data.flag){
+                                this.formData=res.data.data;
+                                this.imageUrl="http://q399i9518.bkt.clouddn.com/"+res.data.data.img;
+                                axios.post("/user/findAllRole.do").then((res)=>{
+                                    if (res.data.flag){
+                                        this.tableData=res.data.data
+                                        axios.post("/user/findRoleByUserId.do?id="+row.id).then((res=>{
+                                            if(res.data.flag){
+                                                this.roleIds=res.data.data;
+                                            }else {
+                                                this.$message.error(res.data.message)
+                                            }
+                                        }))
+                                    } else {
+                                        this.$message.error(res.data.message)
+                                    }
+                                })
+                            }else {
+                                this.$message.error(res.data.message)
+                            }
+                        })
+
+                    },
+                },
+
+
+        })
+    </script>
+</html>

@@ -14,7 +14,6 @@ public interface RoleDao {
     public Page<Role> queryByString(String queryString);
     public List<Menu> findMenu();
     public List<Permission> findPermission();
-    public void add(Role role);
     public void setRoleAndPermission(HashMap<String, Integer> map);
     public Role findByRoleId(Integer id);
     public List<Integer> findRoleAndPermessionById(Integer id);
@@ -25,4 +24,5 @@ public interface RoleDao {
     public void delRoleAndMenu(Integer id);
     public void delRoleById(Integer id);
     public long findUserCountById(Integer id);
+    public void add(Role role);
 }

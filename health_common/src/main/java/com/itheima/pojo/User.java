@@ -17,6 +17,9 @@ public class User implements Serializable{
     private String remark; // 备注
     private String station; // 状态
     private String telephone; // 联系电话
+    private String img;
+    private String birthdaystr;
+
     private Set<Role> roles = new HashSet<Role>(0);//对应角色集合
 
     public Integer getId() {
@@ -89,5 +92,19 @@ public class User implements Serializable{
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+    public String getImg() {
+        return img;
+    }
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getBirthdaystr() {
+        return birthdaystr;
+    }
+
+    public void setBirthdaystr(String birthdaystr) {
+        this.birthdaystr = birthdaystr;
     }
 }
